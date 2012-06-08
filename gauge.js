@@ -464,6 +464,18 @@ var Gauge = function( config) {
 		ctx.restore();
 	};
 
+// used by new padValue
+	function Right(str, n){
+		if (n <= 0)
+			return "";
+		else if (n > String(str).length)
+			return str;
+		else {
+			var iLen = String(str).length;
+			return String(str).substring(iLen, iLen - n);
+		}
+	};
+//new PadValue results in zero decimals displaying correctly
 	function padValue( val) {
 		var n = false;
 		val = parseFloat( val);
@@ -473,13 +485,14 @@ var Gauge = function( config) {
 		}
 
 		val = Math.abs( val);
-		val = val.toFixed( config.valueFormat.dec).toString().split( '.');
 
-		for (var i = 0, s = config.valueFormat.int - val[0].length; i < s; ++i) {
-			val[0] = '0' + val[0];
-		}
+		var CFint=config.valueFormat.int;
+		var CFdec=config.valueFormat.dec;
 
-		return (n ? '-' : '') + val[0] + '.' + val[1];
+ 		val= val.toFixed(CFdec).toString();
+		val =Right( '00000000000' + val,CFdec+CFint+(CFdec==0 ? 0 : 1));
+
+		return (n ? '-' : '') + val;
 	};
 
 	function rpoint( r, a) {
